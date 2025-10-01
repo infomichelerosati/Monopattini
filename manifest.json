@@ -1,0 +1,25 @@
+{
+  "name": "Prontuario Monopattini Elettrici",
+  "short_name": "Prontuario PME",
+  "description": "Guida rapida alle sanzioni per monopattini elettrici per operatori di Polizia.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#0284c7",
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
