@@ -3,229 +3,499 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prontuario Monopattini Elettrici 2026</title>
+    <title>Prontuario Monopattini Elettrici - CdS 2026</title>
 
     <!-- PWA Manifest & Theme -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0284c7">
-    <meta name="description" content="Guida aggiornata ad Aprile 2026 alle sanzioni per monopattini elettrici (Riforma CDS L. 177/2024).">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="Prontuario operativo per l'accertamento e la contestazione delle violazioni alla circolazione dei monopattini elettrici (Riforma CdS 2026 - L. 160/2019 e L. 177/2024).">
     
-    <!-- Tailwind CSS & Fonts -->
+    <!-- Tailwind CSS & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Dice a Tailwind di usare la classe 'dark' invece delle preferenze di sistema
         tailwind.config = {
             darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        polizia: {
+                            50: '#f0f5fa',
+                            100: '#e1ecf5',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            800: '#1e3a8a',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
         }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
-        .modal-enter-active {
-            opacity: 1;
-            transform: scale(1);
-            transition: all 0.2s ease-out;
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
         }
-        .modal-leave-active {
-            opacity: 0;
-            transform: scale(0.95);
-            transition: all 0.2s ease-in;
+        .step-transition {
+            animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .wizard-button, #copy-btn {
-            transition: background-color 0.2s, transform 0.1s;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .wizard-button:active, #copy-btn:active {
-            transform: scale(0.98);
+        .choice-card {
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            background-color: #ffffff;
+        }
+        .choice-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+        }
+        .dark .choice-card {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+        .dark .choice-card:hover {
+            border-color: #38bdf8;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.1);
+        }
+        .choice-card.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+        .dark .choice-card.selected {
+            border-color: #38bdf8;
+            background-color: #1e3a8a40;
+        }
+        @media print {
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .card-main { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; }
         }
         .powered-by {
             font-size: 10px;
-            font-weight: 600;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            font-weight: 700;
+            background: linear-space;
             background-image: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc, #f472b6);
             background-size: 200% 200%;
-            animation: text-color-change 5s ease-in-out infinite, pulse-lite 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-color-change 5s ease-in-out infinite;
         }
-
         @keyframes text-color-change {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
-        @keyframes pulse-lite {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.8;
-          }
-          50% {
-            transform: scale(1.05);
-            opacity: 1;
-          }
-        }
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-slate-900 min-h-screen">
+<body class="bg-slate-100 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 transition-colors duration-200">
 
-    <div class="w-full max-w-4xl mx-auto px-4 pb-4 pt-12 md:p-6 relative">
+    <div class="max-w-5xl mx-auto px-2 sm:px-4 py-4 md:py-8 card-main">
         
-        <div class="powered-by absolute top-4 left-4 select-none">Powered By Michele Rosati</div>
+        <!-- HEADER ISTITUZIONALE -->
+        <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white rounded-2xl p-5 sm:p-7 shadow-xl border border-blue-900/40 relative overflow-hidden mb-5">
+            <div class="powered-by absolute top-2 right-4 select-none">Powered By Michele Rosati</div>
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 flex-shrink-0">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <span class="bg-blue-500/30 text-blue-200 text-xs font-bold px-2.5 py-0.5 rounded-full border border-blue-400/30 uppercase tracking-wider">Polizia Stradale / Locale</span>
+                            <span class="bg-emerald-500/30 text-emerald-300 text-xs font-bold px-2 py-0.5 rounded-full border border-emerald-400/30">Edizione 2026</span>
+                            <span class="bg-amber-500/20 text-amber-200 text-xs font-medium px-2 py-0.5 rounded-full border border-amber-400/30">L. 177/2024 & L. 160/2019</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                            <span>Prontuario Monopattini Elettrici</span>
+                            <span class="text-base font-normal text-slate-300">| Sanzioni CdS</span>
+                        </h1>
+                        <p class="text-xs sm:text-sm text-slate-300">Accertamento guidato, calcolo sanzioni con sconto 30% e diciture per verbale</p>
+                    </div>
+                </div>
 
-        <header class="text-center mb-6">
-            <div class="flex justify-center items-center gap-3">
-                <svg class="w-8 h-8 text-sky-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                </svg>
-                <h1 class="text-lg md:text-2xl font-bold text-slate-800 dark:text-slate-100">Prontuario Monopattini 2026</h1>
+                <div class="flex items-center gap-2 self-start md:self-center flex-wrap no-print">
+                    <button onclick="resetAccertamento()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition" title="Ricomincia accertamento">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <span>Nuovo</span>
+                    </button>
+                    <button onclick="openCalcolatoreModal()" class="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-700/30 transition" title="Calcola termini 5gg e 60gg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <span>Calcola Date</span>
+                    </button>
+                    <button onclick="openNormeModal()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition" title="Normativa integrale">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        <span>Normativa</span>
+                    </button>
+                    <button id="theme-toggle" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs border border-slate-700 transition" title="Cambia tema chiaro/scuro">
+                        <svg id="theme-toggle-dark-icon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM5 11a1 1 0 100-2H4a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
             </div>
-            <p class="text-slate-500 dark:text-slate-400 mt-1">Guida rapida per operatori di Polizia.</p>
         </header>
 
-        <!-- Search and Theme container -->
-        <div class="mb-6 flex items-center gap-2">
-            <!-- Search Bar wrapper -->
-            <div class="relative flex-grow">
-                <input type="text" id="search-input" placeholder="Cerca violazione..." class="w-full p-3 pl-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition dark:bg-slate-700 dark:border-slate-600 dark:text-white" autocomplete="off">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+        <!-- SEZIONE DATI INTESTAZIONE VERBALE (COLLAPSIBLE) -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 mb-5 no-print">
+            <details id="detailsIntestazione" class="group">
+                <summary class="flex items-center justify-between cursor-pointer list-none text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-sky-400 select-none">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Dati Intestazione e Parti (Opzionali per l'incorporazione nel verbale)
+                    </span>
+                    <span class="text-xs text-blue-600 dark:text-sky-400 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                
+                <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                    <div>
+                        <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Data e Ora Accertamento</label>
+                        <input type="datetime-local" id="fieldDataOra" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Luogo / Via / Civico</label>
+                        <input type="text" id="fieldLuogo" placeholder="Es. Via Roma incrocio Via Garibaldi" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Agenti Accertatori</label>
+                        <input type="text" id="fieldAgenti" placeholder="Es. Sovr. Rossi M. mat. 102, Ag. Sc. Neri L." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Comando / Reparto</label>
+                        <input type="text" id="fieldComando" placeholder="Es. Polizia Locale Grosseto" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Conducente (Cognome e Nome)</label>
+                        <input type="text" id="fieldConducente" placeholder="Nome Cognome, nato a ... il ..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Esercente Genitoriale (se minore)</label>
+                        <input type="text" id="fieldGenitore" placeholder="Genitore / Affidatario del minore" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Monopattino (Marca, Modello, Colore)</label>
+                        <input type="text" id="fieldVeicolo" placeholder="Es. Xiaomi Mi Pro 2 - Nero" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Contrassegno (Targa) / N. Telaio</label>
+                        <input type="text" id="fieldIdentificativo" placeholder="Es. Contrassegno n. o Telaio sn..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500 uppercase font-mono">
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <!-- TABS NAVIGAZIONE MODALITÀ -->
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 mb-5 gap-2 overflow-x-auto no-print">
+            <div class="flex gap-2">
+                <button onclick="switchTab('wizard')" id="tab-btn-wizard" class="py-3 px-4 font-bold text-sm border-b-2 border-blue-600 text-blue-700 dark:text-sky-400 flex items-center gap-2 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    <span>Assistente Guidato</span>
+                </button>
+                <button onclick="switchTab('prontuario')" id="tab-btn-prontuario" class="py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-2 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    <span>Prontuario Sanzioni</span>
+                </button>
+                <button onclick="switchTab('riepilogo')" id="tab-btn-riepilogo" class="py-3 px-4 font-semibold text-sm border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-2 transition relative">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Verbale Finale</span>
+                    <span id="badge-count" class="hidden bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+
+            <div class="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                <span>Stato:</span>
+                <span id="status-offline" class="text-emerald-500 font-semibold flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                    Pronto Offline
+                </span>
+            </div>
+        </div>
+
+        <!-- SEZIONE 1: ASSISTENTE GUIDATO (WIZARD) -->
+        <div id="section-wizard" class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-7">
+            
+            <!-- Barra di avanzamento Wizard -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">
+                    <span id="wizardStepLabel">Fase 1 di 7: Caratteristiche Tecniche e Costruttive</span>
+                    <span id="wizardPercentLabel" class="text-blue-600 dark:text-sky-400 font-bold">14%</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+                    <div id="wizardProgressBar" class="bg-blue-600 dark:bg-sky-500 h-2 rounded-full transition-all duration-300" style="width: 14%;"></div>
                 </div>
             </div>
 
-            <!-- Dark Mode Toggle -->
-            <div>
-                 <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-700 rounded-lg text-sm p-2.5">
-                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM5 11a1 1 0 100-2H4a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            <!-- Contenitore Domanda Wizard -->
+            <div id="wizard-container" class="min-h-[220px]">
+                <!-- Contenuto iniettato dinamicamente da JavaScript -->
+            </div>
+
+            <!-- Controlli navigazione Wizard -->
+            <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+                <button id="wiz-prev-btn" onclick="prevWizardStep()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 font-semibold text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5">
+                    &larr; Indietro
                 </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="switchTab('riepilogo')" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition">
+                        Salta al Verbale
+                    </button>
+                    <button id="wiz-next-btn" onclick="nextWizardStep()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-500/20 transition flex items-center gap-1.5">
+                        <span>Avanti</span>
+                        &rarr;
+                    </button>
+                </div>
             </div>
         </div>
 
-        <main id="main-content" class="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6 md:p-8 text-center min-h-[250px] flex flex-col items-center justify-center">
-            <!-- Wizard steps or search results will be injected here -->
-        </main>
+        <!-- SEZIONE 2: PRONTUARIO SANZIONI COMPLETO -->
+        <div id="section-prontuario" class="hidden space-y-4">
+            
+            <!-- Barra di ricerca e filtri categorie -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4">
+                <div class="relative mb-3">
+                    <input type="text" id="searchViolationsInput" oninput="filterViolations()" placeholder="Cerca violazione per articolo, descrizione, parole chiave (es. targa, casco, marciapiede, 30%)..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 pl-10 text-sm focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-slate-100">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                </div>
 
-        <div id="navigation-controls" class="mt-6 flex justify-center gap-4">
-            <button id="back-btn" class="hidden bg-slate-200 text-slate-700 font-bold py-2 px-5 rounded-lg hover:bg-slate-300 transition wizard-button dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600">
-                &larr; Indietro
-            </button>
-            <button id="reset-btn" class="bg-sky-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-sky-700 transition wizard-button">
-                Ricomincia
-            </button>
+                <!-- Bottoni Categoria -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+                    <button onclick="setCategoryFilter('all')" class="cat-pill active px-3 py-1.5 rounded-lg bg-blue-600 text-white font-medium whitespace-nowrap" data-cat="all">Tutte</button>
+                    <button onclick="setCategoryFilter('targa_rca')" class="cat-pill px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap hover:bg-slate-200" data-cat="targa_rca">Targa & Assicurazione</button>
+                    <button onclick="setCategoryFilter('casco_eta')" class="cat-pill px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap hover:bg-slate-200" data-cat="casco_eta">Casco & Conducente</button>
+                    <button onclick="setCategoryFilter('tecnica')" class="cat-pill px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap hover:bg-slate-200" data-cat="tecnica">Frecce, Stop & Luci</button>
+                    <button onclick="setCategoryFilter('circolazione')" class="cat-pill px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap hover:bg-slate-200" data-cat="circolazione">Ambiti & Velocità</button>
+                    <button onclick="setCategoryFilter('comportamento')" class="cat-pill px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap hover:bg-slate-200" data-cat="comportamento">Cellulare & Guida</button>
+                    <button onclick="setCategoryFilter('sosta')" class="cat-pill px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap hover:bg-slate-200" data-cat="sosta">Sosta & Rimozione</button>
+                    <button onclick="setCategoryFilter('ciclomotore')" class="cat-pill px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-400 font-medium whitespace-nowrap hover:bg-slate-200" data-cat="ciclomotore">Riqualificazione Ciclomotore</button>
+                </div>
+            </div>
+
+            <!-- Lista violazioni renderizzata -->
+            <div id="violations-list" class="space-y-3">
+                <!-- Inserito da JS -->
+            </div>
         </div>
 
-        <footer class="text-center text-xs text-slate-400 dark:text-slate-500 pt-6 mt-6 border-t border-slate-200 dark:border-slate-700">
-             <p>Questa applicazione è uno strumento di ausilio basato sulla normativa vigente. I dati hanno valore indicativo. Si declina ogni responsabilità per eventuali errori o omissioni.</p>
+        <!-- SEZIONE 3: RIEPILOGO SANZIONI & VERBALE FINALE -->
+        <div id="section-riepilogo" class="hidden space-y-5">
+            
+            <!-- Scheda Riepilogo Totali Finanziari -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+                    <div>
+                        <span class="text-xs font-bold text-blue-600 dark:text-sky-400 uppercase tracking-wider">Esito Accertamento</span>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100">Violazioni Accertate</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Verifica degli importi edittali, misura ridotta e sanzioni accessorie applicate</p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <!-- Box Sconto 30% -->
+                        <div class="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-3 text-right">
+                            <span class="block text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">Pagamento entro 5 gg (-30%)</span>
+                            <span id="totale-scontato-val" class="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400">€ 0,00</span>
+                        </div>
+                        <!-- Box PMR -->
+                        <div class="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-xl p-3 text-right">
+                            <span class="block text-[11px] font-semibold text-blue-800 dark:text-blue-300">PMR (entro 60 gg)</span>
+                            <span id="totale-pmr-val" class="text-2xl font-extrabold text-blue-700 dark:text-sky-400">€ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Elenco violazioni selezionate -->
+                <div id="riepilogo-violazioni-list" class="py-4 space-y-3">
+                    <!-- Iniettato dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Scheda Testo Verbale e Relazione di Servizio -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <h3 class="font-bold text-base text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Testo Pronto per Verbale di Contestazione / Relazione di Notifica
+                    </h3>
+                    <div class="flex items-center gap-2 no-print">
+                        <button onclick="copiaSoloDiciture()" id="btn-copia-dicitura" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-semibold transition flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <span>Copia solo Infrazioni</span>
+                        </button>
+                        <button onclick="copiaVerbaleCompleto()" id="btn-copia-completo" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow transition flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                            <span>Copia Verbale Completo</span>
+                        </button>
+                        <button onclick="window.print()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1" title="Stampa o salva in PDF">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                            <span>Stampa</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 font-mono-code text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap select-all" id="verbale-completo-output">
+<!-- Verrà inserito dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER INFORMATIVO -->
+        <footer class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400 dark:text-slate-500 no-print">
+            <p>Prontuario Operativo Monopattini Elettrici &bull; Aggiornato alla Riforma del Codice della Strada (Legge n. 177/2024 e L. 160/2019 art. 1 commi 75 e ss.) &bull; Ideato per le Forze di Polizia</p>
         </footer>
     </div>
 
-    <!-- Result Modal -->
-    <div id="result-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
-        <div id="result-modal-content" class="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg relative max-h-[90vh] overflow-y-auto">
-             <div class="sticky top-0 bg-white dark:bg-slate-800 p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center rounded-t-xl">
-                <h2 id="modal-title" class="text-xl font-bold text-slate-800 dark:text-slate-100">Riepilogo Sanzioni</h2>
-                <button id="close-modal-btn" type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-             </div>
-             <div id="modal-body" class="p-5"></div>
-             <div id="modal-footer" class="sticky bottom-0 bg-slate-50 dark:bg-slate-900/50 backdrop-blur-sm p-4 border-t border-slate-200 dark:border-slate-700 rounded-b-xl space-y-3">
-                 <!-- Total and buttons will be injected here -->
-             </div>
+    <!-- MODAL 1: CALCOLO TERMINI TEMPORALI (5GG / 60GG) -->
+    <div id="modal-calcolatore" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
+                <h3 class="font-bold text-base text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    Calcolatore Termini di Legge
+                </h3>
+                <button onclick="closeCalcolatoreModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg font-bold">&times;</button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-medium text-slate-600 dark:text-slate-400 mb-1">Data Contestazione / Notifica Verbale</label>
+                    <input type="date" id="calcDataInput" onchange="calcolaTerminiDate()" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-xs text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="space-y-2.5 pt-2">
+                    <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50">
+                        <span class="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Termine 5 Giorni (-30% Sconto)</span>
+                        <p class="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 mt-0.5" id="calcResult5gg">Seleziona una data</p>
+                        <p class="text-[10px] text-emerald-600 dark:text-emerald-500 mt-0.5">Se il 5° giorno cade di domenica o festivo, prorogato di diritto al primo giorno feriale (art. 2963 c.c.).</p>
+                    </div>
+
+                    <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50">
+                        <span class="text-[11px] font-bold text-blue-800 dark:text-blue-300 uppercase">Termine 60 Giorni (P.M.R. & Ricorso Prefetto)</span>
+                        <p class="text-sm font-extrabold text-blue-700 dark:text-sky-400 mt-0.5" id="calcResult60gg">Seleziona una data</p>
+                        <p class="text-[10px] text-blue-600 dark:text-slate-400 mt-0.5">Scadenza per il pagamento in misura ridotta o per proporre ricorso al Prefetto ex art. 203 CdS.</p>
+                    </div>
+
+                    <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                        <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase">Termine 30 Giorni (Ricorso Giudice di Pace)</span>
+                        <p class="text-sm font-extrabold text-slate-800 dark:text-slate-200 mt-0.5" id="calcResult30gg">Seleziona una data</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Termine perentorio per l'opposizione davanti al Giudice di Pace ex art. 204-bis CdS / D.Lgs. 150/2011.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 text-right">
+                <button onclick="closeCalcolatoreModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold">Chiudi</button>
+            </div>
         </div>
     </div>
 
+    <!-- MODAL 2: NORMATIVA INTEGRALE & NOTE OPERATIVE POLIZIA -->
+    <div id="modal-norme" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 p-4">
+                <h3 class="font-bold text-base text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    Quadro Normativo 2026 & Linee Guida Operative
+                </h3>
+                <button onclick="closeNormeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg font-bold">&times;</button>
+            </div>
 
+            <div class="overflow-y-auto p-5 text-xs text-slate-700 dark:text-slate-300 space-y-4">
+                <div class="bg-blue-50 dark:bg-blue-950/40 border-l-4 border-blue-600 p-3 rounded-r-lg">
+                    <h4 class="font-bold text-blue-900 dark:text-blue-200 text-sm">Fonte Primaria: Legge 27/12/2019 n. 160 (art. 1 commi 75 e segg.)</h4>
+                    <p class="mt-1 text-slate-600 dark:text-slate-300">Come novellata dalla Legge di Riforma del Codice della Strada n. 177/2024 e decreti interministeriali MIT/MIMIT.</p>
+                </div>
+
+                <div>
+                    <h5 class="font-bold text-slate-900 dark:text-slate-100 text-xs uppercase mb-1">1. Qualificazione Giuridica del Monopattino Elettrico (Comma 75)</h5>
+                    <p>I monopattini a propulsione prevalentemente elettrica sono equiparati ai velocipedi solo se rispettano rigorosamente:</p>
+                    <ul class="list-disc pl-5 mt-1 space-y-0.5">
+                        <li>Motore elettrico di potenza nominale continua <strong>non superiore a 0,50 kW (500 Watt)</strong>.</li>
+                        <li><strong>Assenza assoluta di posti a sedere</strong> (azionamento esclusivamente in piedi).</li>
+                        <li>Limitatore di velocità regolato a <strong>max 20 km/h</strong> su strada e <strong>6 km/h</strong> in aree pedonali.</li>
+                        <li>Dotazione di campanello acustico, freno indipendente su entrambe le ruote, indicatori di svolta e stop (DM 26/07/2022).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="font-bold text-slate-900 dark:text-slate-100 text-xs uppercase mb-1">2. I Tre Grandi Nuovi Obblighi 2026</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+                        <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-blue-700 dark:text-sky-400 block mb-0.5">1. Contrassegno (Targa)</span>
+                            Adesivo plastificato, personale e non rimovibile stampato dall'IPZS. Sanzione da € 100 a € 400.
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-blue-700 dark:text-sky-400 block mb-0.5">2. Assicurazione RCA</span>
+                            Polizza obbligatoria estesa a tutti i mezzi (anche privati ex D.Lgs. 184/2023). Sanzione da € 100 a € 400.
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            <span class="font-bold text-blue-700 dark:text-sky-400 block mb-0.5">3. Casco per TUTTI</span>
+                            Omologato UNI EN 1078 o UNI EN 1080 esteso a qualsiasi età (non più solo under 18). Sanzione da € 50 a € 250.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 dark:bg-amber-950/40 border-l-4 border-amber-600 p-3 rounded-r-lg">
+                    <h5 class="font-bold text-amber-900 dark:text-amber-200 text-xs uppercase mb-1">3. Regola Aurea per l'Agente: Distinzione da Ciclomotore Abusivo</h5>
+                    <p class="text-slate-700 dark:text-slate-300">
+                        Se durante il controllo l'agente accerta la presenza di un <strong>sellino/sedile</strong> oppure un motore con potenza superiore a <strong>2 kW</strong> o motore a scoppio:
+                    </p>
+                    <p class="mt-1 font-semibold text-red-700 dark:text-red-400">
+                        NON si applica la disciplina dei monopattini, ma si contesta l'uso di CICLOMOTORE non omologato:
+                    </p>
+                    <ul class="list-disc pl-5 mt-1 space-y-0.5 text-slate-600 dark:text-slate-300">
+                        <li>Art. 97 commi 5 e 14 CdS: Circolazione senza targa/certificato (sequestro ai fini della confisca).</li>
+                        <li>Art. 193 commi 1 e 2 CdS: Mancanza copertura assicurativa RCA (€ 866 + sequestro).</li>
+                        <li>Art. 116 commi 15 e 17 CdS: Guida senza patente o con patente non corrispondente (€ 5.100 + fermo 3 mesi).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="font-bold text-slate-900 dark:text-slate-100 text-xs uppercase mb-1">4. Circolazione Notturna e Dispositivi Riflettenti</h5>
+                    <p>
+                        Da mezz'ora dopo il tramonto e in ogni caso di scarsa visibilità: obbligo di luci accese (bianca anteriore, rossa posteriore) e <strong>obbligo per il conducente di indossare giubbotto o bretelle retroriflettenti ad alta visibilità</strong> (sanzione € 50 - € 200).
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 text-right">
+                <button onclick="closeNormeModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT APPLICATIVO -->
     <script>
-        // --- SERVICE WORKER REGISTRATION ---
+        // --- 1. REGISTRAZIONE SERVICE WORKER ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('Service Worker registrato con successo.', reg))
-                    .catch(err => console.log('Registrazione Service Worker fallita:', err));
+                    .then(reg => console.log('SW registrato con successo.', reg))
+                    .catch(err => console.error('Errore SW:', err));
             });
         }
-        
-        // --- VIOLATIONS DATABASE ---
-        const violationsData = [
-            {
-                category: "Obblighi Fondamentali (Targa, Assicurazione, Casco)",
-                items: [
-                    { id: 'mancanza-targa', title: "Circolazione senza targa/contrassegno", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "targa contrassegno", details: { description: "Circolazione con monopattino elettrico sprovvisto del contrassegno identificativo adesivo, personale e non rimovibile (targa), prodotto dalla Zecca dello Stato.", sanction: "Da € 100,00 a € 400,00", payment: "€ 100,00", accessory: "Nessuna.", notes: "ATTENZIONE: L'obbligo del contrassegno è operativo dal 16 maggio 2026. Fino a tale data la sanzione non è applicabile se non per i veicoli già targati in precedenza.", reportText: "Circolava alla guida di un monopattino elettrico sprovvisto del contrassegno identificativo (targa) previsto dalla normativa vigente." }},
-                    { id: 'mancanza-assicurazione', title: "Circolazione senza assicurazione RC", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "assicurazione rc", details: { description: "Circolazione con monopattino elettrico senza la copertura di un'assicurazione per la responsabilità civile verso terzi (RC).", sanction: "Da € 100,00 a € 400,00", payment: "€ 100,00", accessory: "Nessuna.", notes: "ATTENZIONE: L'obbligo di assicurazione RC è operativo dal 16 luglio 2026.", reportText: "Circolava alla guida di un monopattino elettrico sprovvisto della copertura assicurativa per la responsabilità civile verso terzi (RC), obbligatoria ai sensi della normativa vigente." }},
-                    { id: 'mancanza-casco', title: "Conducente senza casco protettivo", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "casco protettivo", details: { description: "Conduzione di un monopattino elettrico senza indossare un idoneo casco protettivo conforme alle norme UNI EN 1078 o UNI EN 1080. L'obbligo è esteso a tutti i conducenti, senza distinzione di età.", sanction: "Da € 50,00 a € 250,00", payment: "€ 50,00", accessory: "Nessuna.", notes: "A differenza della normativa precedente, l'obbligo di casco è per tutti (anche maggiorenni).", reportText: "Conducente di monopattino elettrico non indossava il casco protettivo obbligatorio." }}
-                ]
-            },
-            {
-                category: "Caratteristiche Tecniche del Veicolo",
-                items: [
-                    { id: 'mancanza-frecce-stop', title: "Veicolo senza indicatori di direzione/freno", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "frecce stop luci", details: { description: "Circolazione con un monopattino sprovvisto di indicatori luminosi di svolta (frecce) e di indicatori luminosi di freno su entrambe le ruote.", sanction: "Da € 200,00 a € 800,00", payment: "€ 266,67", accessory: "Nessuna.", notes: "Tutti i monopattini in circolazione devono essere dotati di questi dispositivi. Non sono ammesse deroghe per modelli antecedenti.", reportText: "Conduceva un monopattino sprovvisto di [indicatori luminosi di svolta / indicatori luminosi di frenata] su entrambe le ruote." }},
-                    { id: 'caratteristiche-diverse', title: "Monopattino con caratteristiche non conformi", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "potenza sedile", details: { description: "Circolazione con monopattino avente caratteristiche tecniche o costruttive diverse da quelle ammesse. Casi comuni: potenza motore > 0,5 kW, sedile presente, velocità > 20 km/h.", sanction: "Da € 200,00 a € 800,00", payment: "€ 266,67", accessory: "Confisca del mezzo (sequestro amministrativo ai fini della confisca ex Art. 213 CdS).", notes: "La violazione si applica anche a chi modifica il proprio monopattino. Se il veicolo ha motore termico o potenza > 2 kW, si applicano le norme dei ciclomotori.", reportText: "Conduceva un monopattino non avente le caratteristiche tecniche richieste. In particolare si accertava che il veicolo presentava [potenza superiore a 0,5 kW / un sedile / velocità per costruzione superiore a 20km/h]." } }
-                ]
-            },
-            {
-                category: "Norme di Circolazione e Comportamento",
-                items: [
-                    { id: 'eta-minima', title: "Conducente con età inferiore a 14 anni", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "eta minore", details: { description: "Conduzione di monopattino elettrico senza aver compiuto il 14° anno di età.", sanction: "Da € 40,00 a € 160,00", payment: "€ 40,00", accessory: "Nessuna.", notes: "La violazione si contesta all'esercente la potestà genitoriale o al tutore.", reportText: "Conduceva un monopattino pur non avendo compiuto 14 anni di età." } },
-                    { id: 'strade-vietate', title: "Circolazione su aree non consentite", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "strada marciapiede extraurbana", details: { description: "Circolazione su strade urbane con limite > 50 Km/h, strade extraurbane (salvo ciclabili), marciapiedi o contromano.", sanction: "Da € 100,00 a € 400,00", payment: "€ 100,00", accessory: "Nessuna.", notes: "La Riforma 2024 ha ribadito il divieto assoluto di circolazione fuori dai centri urbani se non su percorsi protetti.", reportText: "Conduceva un monopattino su [strada urbana con limite > 50 Km/h / strada extraurbana / marciapiede / circolando contromano]." }},
-                    { id: 'sosta-vietata', title: "Sosta irregolare", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "sosta parcheggio marciapiede", details: { description: "Sosta del monopattino sul marciapiede, al di fuori delle aree appositamente designate.", sanction: "Da € 42,00 a € 173,00", payment: "€ 42,00", accessory: "Nessuna.", notes: "Sanzione ex Art. 158/5 CDS. Consentita solo negli stalli per velocipedi/motocicli o aree dedicate.", reportText: "Lasciava in sosta il monopattino sul marciapiede, al di fuori delle aree consentite." }},
-                    { id: 'limiti-velocita', title: "Superamento limiti di velocità specifici", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "velocita", details: { description: "Superamento della velocità di 20 Km/h su carreggiata o di 6 Km/h nelle aree pedonali.", sanction: "Da € 50,00 a € 250,00", payment: "€ 50,00", accessory: "Nessuna.", notes: "Il limite massimo su strada è di 20 km/h.", reportText: "Conduceva un monopattino ad una velocità superiore a [20 Km/h su carreggiata / 6 Km/h in area pedonale]." } },
-                    { id: 'luci-notturne', title: "Circolazione notturna senza luci/catadiottri", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "luci notte buio", details: { description: "Circolazione da mezz'ora dopo il tramonto con luci non funzionanti o mancanti.", sanction: "Da € 50,00 a € 200,00", payment: "€ 50,00", accessory: "Nessuna.", notes: "Obbligo di luce bianca anteriore, rossa posteriore e catadiottri.", reportText: "Conduceva il monopattino senza avere in funzione le luci di posizione / senza i prescritti catadiottri." } },
-                    { id: 'trasporto', title: "Trasporto di persone, oggetti o animali", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "trasporto passeggero", details: { description: "Trasportare altre persone, oggetti o animali, trainare veicoli o farsi trainare.", sanction: "Da € 50,00 a € 200,00", payment: "€ 50,00", accessory: "Nessuna.", notes: "", reportText: "Alla guida del monopattino trasportava altra persona (ovvero oggetti o animali) / trainava un veicolo / si faceva trainare." } },
-                    { id: 'giubbotto', title: "Mancato uso del giubbotto/bretelle retroriflettenti", article: "Art. 1, commi 75 e ss., L. 160/2019 (agg. L. 177/2024)", keywords: "giubbotto bretelle", details: { description: "Circolare di notte o con scarsa visibilità senza giubbotto o bretelle retroriflettenti.", sanction: "Da € 50,00 a € 200,00", payment: "€ 50,00", accessory: "Nessuna.", notes: "", reportText: "Circolava senza indossare il giubbotto o le bretelle retroriflettenti ad alta visibilità." } },
-                    { id: 'altre-norme', title: "Violazioni a norme generali del CdS", article: "Vari", keywords: "cellulare semaforo ebbrezza", details: { description: "Applicabilità delle norme di comportamento del Codice della Strada.", sanction: "Varia in base all'articolo.", payment: "Varia in base all'articolo.", accessory: "Varia in base all'articolo.", notes: "Esempi: cellulare (Art. 173), semaforo rosso (Art. 146), ebbrezza (Art. 186).", reportText: "Alla guida del monopattino violava l'art. [numero articolo] del C.d.S. perché [descrizione comportamento]." } }
-                ]
-            }
-        ];
-        const allViolations = violationsData.flatMap(cat => cat.items);
 
-        // --- WIZARD STRUCTURE ---
-        const wizardSteps = {
-            start: { question: "Inizia la procedura di accertamento", answers: [ { text: "Avanti", nextStep: "checkTarga" } ] },
-            checkTarga: { question: "Il veicolo è dotato di targa?", answers: [ { text: "Sì", nextStep: "checkAssicurazione" }, { text: "No", collectViolationId: "mancanza-targa", nextStep: "checkAssicurazione" } ] },
-            checkAssicurazione: { question: "Il conducente esibisce un certificato di assicurazione RC valido?", answers: [ { text: "Sì", nextStep: "checkCasco" }, { text: "No", collectViolationId: "mancanza-assicurazione", nextStep: "checkCasco" } ] },
-            checkCasco: { question: "Il conducente indossa il casco protettivo?", answers: [ { text: "Sì", nextStep: "checkDriverAge" }, { text: "No", collectViolationId: "mancanza-casco", nextStep: "checkDriverAge" } ] },
-            checkDriverAge: { question: "Qual è l'età del conducente?", answers: [ { text: "Minore di 14 anni", collectViolationId: "eta-minima", nextStep: "checkLuciFrecce" }, { text: "14 anni o più", nextStep: "checkLuciFrecce" } ] },
-            checkLuciFrecce: { question: "Il veicolo è dotato di frecce e luci di stop funzionanti?", answers: [ { text: "Sì", nextStep: "checkVisibility" }, { text: "No", collectViolationId: "mancanza-frecce-stop", nextStep: "checkVisibility" } ] },
-            checkVisibility: { question: "Quali sono le condizioni di visibilità?", answers: [ { text: "Diurna / Buona", nextStep: "checkLocation" }, { text: "Notturna / Scarsa", nextStep: "checkNightEquipment" } ] },
-            checkNightEquipment: { question: "Indossa il giubbotto/bretelle retroriflettenti?", answers: [ { text: "Sì", nextStep: "checkLights" }, { text: "No", collectViolationId: "giubbotto", nextStep: "checkLights" } ] },
-            checkLights: { question: "Ha le luci di posizione e i catadiottri funzionanti?", answers: [ { text: "Sì", nextStep: "checkLocation" }, { text: "No", collectViolationId: "luci-notturne", nextStep: "checkLocation" } ] },
-            checkLocation: { question: "Dove sta circolando?", answers: [ { text: "Strada extraurbana o con limite > 50km/h", collectViolationId: "strade-vietate", nextStep: "checkSpeed" }, { text: "Marciapiede o Contromano", collectViolationId: "strade-vietate", nextStep: "checkSpeed" }, { text: "Area pedonale", nextStep: "checkSpeedPedestrian" }, { text: "Luogo consentito", nextStep: "checkSpeed" } ] },
-            checkSpeed: { question: "Supera la velocità di 20 km/h?", answers: [ { text: "Sì", collectViolationId: "limiti-velocita", nextStep: "checkBehavior" }, { text: "No", nextStep: "checkBehavior" } ] },
-            checkSpeedPedestrian: { question: "In area pedonale, supera la velocità di 6 km/h?", answers: [ { text: "Sì", collectViolationId: "limiti-velocita", nextStep: "checkBehavior" }, { text: "No", nextStep: "checkBehavior" } ] },
-            checkBehavior: { question: "Trasporta altre persone/oggetti o si fa trainare?", answers: [ { text: "Sì", collectViolationId: "trasporto", nextStep: "checkSosta" }, { text: "No", nextStep: "checkSosta" } ] },
-            checkSosta: { question: "Il controllo riguarda la sosta del veicolo?", answers: [ { text: "Sì, sosta su marciapiede", collectViolationId: "sosta-vietata", nextStep: "checkBehaviorCDS" }, { text: "No, controllo su circolazione", nextStep: "checkBehaviorCDS" } ] },
-            checkBehaviorCDS: { question: "Ha commesso altre violazioni al CdS (cellulare, semaforo, etc)?", answers: [ { text: "Sì", collectViolationId: "altre-norme", nextStep: "checkTechAnomalies" }, { text: "No", nextStep: "checkTechAnomalies" } ] },
-            checkTechAnomalies: { question: "Il veicolo presenta anomalie tecniche (potenza, sedile)?", answers: [ { text: "Sì", collectViolationId: "caratteristiche-diverse", nextStep: "summary" }, { text: "No, veicolo conforme", nextStep: "summary" } ] },
-            summary: { question: "Accertamento completato.", isEnd: true, answers: [{ text: "Mostra Riepilogo Sanzioni" }] }
-        };
-
-        // --- DOM REFERENCES ---
-        const mainContent = document.getElementById('main-content');
-        const backBtn = document.getElementById('back-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        const searchInput = document.getElementById('search-input');
-        const modal = document.getElementById('result-modal');
-        const modalContent = document.getElementById('result-modal-content');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-        const modalFooter = document.getElementById('modal-footer');
-        const closeModalBtn = document.getElementById('close-modal-btn');
+        // --- 2. GESTIONE TEMA CHIARO / SCURO ---
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
         const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
-        let historyStack = [];
-        let collectedViolations = new Set();
-        
-        // --- THEME ---
         const applyTheme = () => {
-            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            const isDark = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
                 document.documentElement.classList.add('dark');
                 themeToggleLightIcon.classList.remove('hidden');
                 themeToggleDarkIcon.classList.add('hidden');
@@ -242,209 +512,926 @@
             applyTheme();
         });
 
-
-        // --- RENDER FUNCTIONS ---
-        const renderStep = (stepId) => {
-            historyStack.push(stepId);
-            const step = wizardSteps[stepId];
-            mainContent.innerHTML = ''; 
-            
-            const questionEl = document.createElement('h2');
-            questionEl.className = 'text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6';
-            questionEl.textContent = step.question;
-            mainContent.appendChild(questionEl);
-
-            const answersContainer = document.createElement('div');
-            answersContainer.className = step.isEnd ? 'w-full' : 'w-full grid grid-cols-1 md:grid-cols-2 gap-4';
-            
-            step.answers.forEach(answer => {
-                const button = document.createElement('button');
-                button.className = 'w-full text-center wizard-button font-semibold p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition';
-                button.innerHTML = `<span class="text-lg">${answer.text}</span>`;
-                
-                if (step.isEnd) {
-                    button.dataset.action = 'showSummary';
-                    button.classList.add('bg-green-600', 'text-white', 'hover:bg-green-700');
-                } else {
-                    button.dataset.nextStep = answer.nextStep;
-                    if (answer.collectViolationId) {
-                        button.dataset.collectViolationId = answer.collectViolationId;
-                    }
-                    button.classList.add('bg-sky-100', 'text-sky-800', 'hover:bg-sky-200', 'dark:bg-sky-900', 'dark:text-sky-200', 'dark:hover:bg-sky-800');
-                }
-                answersContainer.appendChild(button);
-            });
-            mainContent.appendChild(answersContainer);
-            backBtn.classList.toggle('hidden', historyStack.length <= 1);
+        // Inizializza data e ora odierna nell'intestazione
+        const initDateTime = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('fieldDataOra').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            document.getElementById('calcDataInput').value = `${year}-${month}-${day}`;
+            calcolaTerminiDate();
         };
-        
-        const renderViolations = (violations) => {
-            mainContent.innerHTML = '';
-            const container = document.createElement('div');
-            container.className = 'w-full space-y-4 text-left';
-            if (violations.length === 0) {
-                 container.innerHTML = `<p class="text-slate-500 dark:text-slate-400 text-center">Nessuna violazione trovata.</p>`;
-            } else {
-                violations.forEach(violation => {
-                    const el = document.createElement('div');
-                    el.className = 'p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900/50 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition';
-                    el.innerHTML = `<h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">${violation.title}</h3><p class="text-sm text-slate-500 dark:text-slate-400">${violation.article}</p>`;
-                    el.addEventListener('click', () => {
-                        collectedViolations.add(violation.id);
-                        showModal();
-                    });
-                    container.appendChild(el);
-                });
+
+        // --- 3. DATABASE COMPLETO DELLE SANZIONI (CDS 2026) ---
+        const violationsDb = [
+            {
+                id: 'mancanza-targa',
+                category: 'targa_rca',
+                categoryLabel: 'Targa & Contrassegno',
+                title: "Circolazione senza contrassegno identificativo (targa adesiva)",
+                article: "Art. 1, commi 75-bis e 75-sexiesdecies, L. 160/2019 (agg. L. 177/2024)",
+                keywords: "targa contrassegno zecca adesivo ipzs identificativo",
+                edittale: "Da € 100,00 a € 400,00",
+                pmr: 100.00,
+                sconto30: 70.00,
+                accessoria: "Nessuna.",
+                notes: "I monopattini elettrici devono essere dotati di contrassegno identificativo adesivo, plastificato e non rimovibile prodotto dal Poligrafico dello Stato.",
+                reportText: "Circolava alla guida del monopattino a propulsione prevalentemente elettrica sprovvisto del prescritto contrassegno identificativo (targa adesiva non rimovibile)."
+            },
+            {
+                id: 'mancanza-assicurazione',
+                category: 'targa_rca',
+                categoryLabel: 'Assicurazione R.C.A.',
+                title: "Circolazione senza assicurazione per la Responsabilità Civile (RCA)",
+                article: "Art. 1, commi 75-ter e 75-sexiesdecies, L. 160/2019 (agg. L. 177/2024 e D.Lgs. 184/2023)",
+                keywords: "assicurazione rc rca polizza tagliando copertura sinistro",
+                edittale: "Da € 100,00 a € 400,00",
+                pmr: 100.00,
+                sconto30: 70.00,
+                accessoria: "Nessuna (intimazione a non proseguire la circolazione a veicolo scoperto).",
+                notes: "Obbligo esteso a TUTTI i monopattini elettrici (non solo le flotte in sharing, ma anche tutti i veicoli privati). Il conducente deve esibire il certificato/attestazione anche su supporto digitale.",
+                reportText: "Circolava alla guida di monopattino a propulsione elettrica sprovvisto della prescritta copertura assicurativa per la responsabilità civile verso terzi (RCA)."
+            },
+            {
+                id: 'mancanza-casco',
+                category: 'casco_eta',
+                categoryLabel: 'Casco Protettivo',
+                title: "Conducente senza casco protettivo omologato o non allacciato",
+                article: "Art. 1, commi 75-quater e 75-quaterdecies, L. 160/2019 (agg. L. 177/2024)",
+                keywords: "casco testa protezione allacciato uni en 1078 1080",
+                edittale: "Da € 50,00 a € 250,00",
+                pmr: 50.00,
+                sconto30: 35.00,
+                accessoria: "Nessuna.",
+                notes: "L'obbligo di indossare un idoneo casco protettivo omologato (UNI EN 1078 o UNI EN 1080) è esteso a TUTTI i conducenti di monopattino elettrico, indipendentemente dall'età (sia minorenni che maggiorenni).",
+                reportText: "Circolava alla guida del monopattino elettrico senza indossare (ovvero omettendo di tenere regolarmente allacciato o indossando casco non conforme alle norme tecniche) il prescritto casco protettivo obbligatorio per tutti i conducenti."
+            },
+            {
+                id: 'eta-minima-14',
+                category: 'casco_eta',
+                categoryLabel: 'Età Conducente',
+                title: "Guida di conducente infradattordicenne (minore di 14 anni)",
+                article: "Art. 1, commi 75-octies e 75-quaterdecies, L. 160/2019 in rel. Art. 2 L. 689/1981",
+                keywords: "minore eta anni 14 genitore potesta tutela",
+                edittale: "Da € 40,00 a € 160,00",
+                pmr: 40.00,
+                sconto30: 28.00,
+                accessoria: "Nessuna.",
+                notes: "Età minima richiesta: 14 anni compiuti. Ai sensi dell'art. 2 L. 689/81, il minore di 14 anni non risponde dell'infrazione: il verbale deve essere redatto e notificato all'esercente la responsabilità genitoriale.",
+                reportText: "In qualità di esercente la responsabilità genitoriale (ovvero tutore/incaricato della vigilanza), ometteva di impedire che il minore di anni 14 circolasse alla guida del monopattino elettrico in violazione del limite minimo di età prescritto."
+            },
+            {
+                id: 'mancanza-frecce-stop',
+                category: 'tecnica',
+                categoryLabel: 'Dotazioni Tecniche',
+                title: "Monopattino privo di frecce (indicatori di svolta) o luci di arresto (stop)",
+                article: "Art. 1, commi 75-quinquies e 75-duodecies, L. 160/2019 (D.M. MIT 26/07/2022)",
+                keywords: "frecce stop indicatori direzione freno luci entrambe ruote",
+                edittale: "Da € 200,00 a € 800,00",
+                pmr: 266.67,
+                sconto30: 186.67,
+                accessoria: "Nessuna.",
+                notes: "Tutti i monopattini in circolazione devono essere obbligatoriamente muniti di indicatori luminosi di svolta (frecce) anteriori e posteriori e di freno/stop su entrambe le ruote.",
+                reportText: "Circolava alla guida di monopattino elettrico sprovvisto di indicatori luminosi di svolta (frecce) e/o di segnalatore luminoso di arresto (luce stop) su entrambe le ruote."
+            },
+            {
+                id: 'luci-notturne-catadiottri',
+                category: 'tecnica',
+                categoryLabel: 'Dotazioni Tecniche',
+                title: "Circolazione notturna/buio senza luci accese o catadiottri",
+                article: "Art. 1, commi 75-quinquies e 75-quaterdecies, L. 160/2019",
+                keywords: "luci buio notte tramonto catadiottri bianco rosso visibilita",
+                edittale: "Da € 50,00 a € 200,00",
+                pmr: 50.00,
+                sconto30: 35.00,
+                accessoria: "Nessuna.",
+                notes: "Obbligo di luce bianca/gialla anteriore e luce rossa posteriore attiva da mezz'ora dopo il tramonto e di giorno qualora le condizioni di visibilità lo richiedano.",
+                reportText: "Circolava da mezz'ora dopo il tramonto (ovvero in condizioni di visibilità limitata) alla guida di monopattino senza avere in funzione le luci regolamentari (anteriore/posteriore) o privo dei prescritti catadiottri."
+            },
+            {
+                id: 'giubbotto-retroriflettente',
+                category: 'comportamento',
+                categoryLabel: 'Abbigliamento & Visibilità',
+                title: "Mancato uso del giubbotto o bretelle retroriflettenti ad alta visibilità",
+                article: "Art. 1, commi 75-octies e 75-quaterdecies, L. 160/2019",
+                keywords: "giubbotto bretelle alta visibilita notte buio retroriflettente",
+                edittale: "Da € 50,00 a € 200,00",
+                pmr: 50.00,
+                sconto30: 35.00,
+                accessoria: "Nessuna.",
+                notes: "Obbligatorio per il conducente da mezz'ora dopo il tramonto a mezz'ora prima dell'alba e in galleria o con nebbia/scarsa visibilità.",
+                reportText: "Circolava in condizioni di oscurità (ovvero scarsa visibilità / galleria) alla guida del monopattino omettendo di indossare il prescritto giubbotto o bretelle retroriflettenti ad alta visibilità."
+            },
+            {
+                id: 'caratteristiche-diverse',
+                category: 'tecnica',
+                categoryLabel: 'Caratteristiche Costruttive',
+                title: "Monopattino non conforme o manomesso (potenza > 0,5 kW, sedile, velocità > 20 km/h)",
+                article: "Art. 1, commi 75 e 75-septiesdecies, L. 160/2019 (agg. L. 177/2024)",
+                keywords: "potenza sedile sellino manomesso velocita 500w motore confisca sequestro",
+                edittale: "Da € 200,00 a € 800,00",
+                pmr: 266.67,
+                sconto30: 186.67,
+                accessoria: "CONFISCA AMMINISTRATIVA DEL VEICOLO (Sequestro cautelare ex art. 213 CdS).",
+                notes: "Si applica quando il mezzo presenta sedile/sellino (non azionato in piedi), motore nominale > 500 W (0,50 kW) o limitatore alterato. Si redige verbale di sequestro ai fini della confisca. Se > 2 kW o motore termico, applicare la riqualificazione a ciclomotore.",
+                reportText: "Circolava alla guida di monopattino elettrico non avente le caratteristiche costruttive e tecniche previste. Nello specifico il veicolo risultava dotato di [sellino / motore con potenza superiore a 0,5 kW / velocità per costruzione o alterazione superiore a 20 km/h]. Si procede al sequestro amministrativo ai fini della confisca ex art. 213 CdS."
+            },
+            {
+                id: 'circolazione-strade-vietate',
+                category: 'circolazione',
+                categoryLabel: 'Ambiti di Circolazione',
+                title: "Circolazione su strade extraurbane o urbane con limite > 50 km/h",
+                article: "Art. 1, commi 75-septies e 75-terdecies, L. 160/2019 (agg. L. 177/2024)",
+                keywords: "extraurbana strada limite 50 tangenziale statale vietata",
+                edittale: "Da € 100,00 a € 400,00",
+                pmr: 100.00,
+                sconto30: 70.00,
+                accessoria: "Nessuna.",
+                notes: "I monopattini possono circolare solo ed esclusivamente nei centri abitati su strade con limite massimo fino a 50 km/h o su piste ciclabili. È fatto espresso divieto su tutte le strade extraurbane e sulle arterie urbane con limite superiore a 50 km/h.",
+                reportText: "Circolava alla guida del monopattino elettrico su ambito stradale vietato, segnatamente su [strada extraurbana / strada urbana avente limite di velocità fissato a ... km/h, superiore al limite massimo consentito di 50 km/h]."
+            },
+            {
+                id: 'marciapiede-contromano',
+                category: 'circolazione',
+                categoryLabel: 'Ambiti di Circolazione',
+                title: "Circolazione sul marciapiede o contromano",
+                article: "Art. 1, commi 75-septies e 75-terdecies, L. 160/2019",
+                keywords: "marciapiede contromano pedoni senso vietato opposto",
+                edittale: "Da € 100,00 a € 400,00",
+                pmr: 100.00,
+                sconto30: 70.00,
+                accessoria: "Nessuna.",
+                notes: "Sui marciapiedi i monopattini possono essere solo condotti a mano. La marcia contromano è vietata, salvo che sia consentito da specifica ordinanza con doppio senso ciclabile segnalato.",
+                reportText: "Circolava alla guida del monopattino [sopra il marciapiede destinato ai pedoni senza condurlo a mano / contromano in senso opposto a quello consentito di marcia]."
+            },
+            {
+                id: 'limiti-velocita',
+                category: 'circolazione',
+                categoryLabel: 'Velocità',
+                title: "Superamento limite di velocità (oltre 20 km/h o oltre 6 km/h in area pedonale)",
+                article: "Art. 1, commi 75-sexies e 75-quaterdecies, L. 160/2019",
+                keywords: "velocita limite 20 6 area pedonale eccesso",
+                edittale: "Da € 50,00 a € 250,00",
+                pmr: 50.00,
+                sconto30: 35.00,
+                accessoria: "Nessuna.",
+                notes: "Il limite massimo generale è di 20 km/h (ridotto dai precedenti 25) su carreggiata e piste ciclabili, e di 6 km/h nelle aree pedonali.",
+                reportText: "Circolava alla guida di monopattino elettrico superando il limite di velocità prescritto, procedendo ad una velocità accertata di ... km/h [oltre i 20 km/h su carreggiata / oltre i 6 km/h in area pedonale]."
+            },
+            {
+                id: 'trasporto-passeggeri-traino',
+                category: 'comportamento',
+                categoryLabel: 'Comportamento alla Guida',
+                title: "Trasporto di persone (passeggero), animali, cose o traino veicoli",
+                article: "Art. 1, commi 75-octies e 75-quaterdecies, L. 160/2019",
+                keywords: "trasporto passeggero due persone animali cose carico traino",
+                edittale: "Da € 50,00 a € 200,00",
+                pmr: 50.00,
+                sconto30: 35.00,
+                accessoria: "Nessuna.",
+                notes: "Il monopattino è rigorosamente monoposto. È vietato trasportare un'altra persona (anche minore), animali, farsi trainare o trainare carrelli/altri mezzi.",
+                reportText: "Alla guida del monopattino elettrico trasportava altra persona (ovvero animali / oggetti ingombranti / trainava altro veicolo / si faceva trainare da altro veicolo in marcia)."
+            },
+            {
+                id: 'smartphone-cellulare',
+                category: 'comportamento',
+                categoryLabel: 'Comportamento alla Guida',
+                title: "Uso di smartphone, cellulare o cuffie durante la marcia",
+                article: "Art. 173, commi 2 e 3-bis, Codice della Strada",
+                keywords: "cellulare smartphone telefono cuffie auricolari mani manubrio",
+                edittale: "Da € 165,00 a € 660,00",
+                pmr: 165.00,
+                sconto30: 115.50,
+                accessoria: "Sospensione patente da 1 a 3 mesi se recidivo nel biennio (se munito di patente).",
+                notes: "Il conducente deve reggere costantemente il manubrio con entrambe le mani. Vietato l'uso del cellulare tenuto in mano o di cuffie su entrambe le orecchie.",
+                reportText: "Circolava alla guida del monopattino facendo uso durante la marcia di apparecchio radiotelefonico (smartphone), non avvalendosi di vivavoce o cuffia a una sola capsula auricolare e omettendo di reggere il manubrio con entrambe le mani."
+            },
+            {
+                id: 'sosta-marciapiede',
+                category: 'sosta',
+                categoryLabel: 'Sosta',
+                title: "Sosta vietata del monopattino su marciapiede o spazio pedonale",
+                article: "Art. 1, comma 75-novies L. 160/2019 in rel. Art. 158 commi 1 lett. h e 5 CdS",
+                keywords: "sosta marciapiede parcheggio intralcio rimozione",
+                edittale: "Da € 42,00 a € 173,00",
+                pmr: 42.00,
+                sconto30: 29.40,
+                accessoria: "RIMOZIONE FORZATA DEL VEICOLO (Art. 159 CdS).",
+                notes: "È vietata la sosta sui marciapiedi, salvo nelle aree appositamente individuate con apposita segnaletica. Si applica la rimozione forzata con spese di recupero e custodia.",
+                reportText: "Lasciava in sosta il monopattino elettrico sopra indicato sul marciapiede / spazio pedonale al di fuori degli appositi stalli autorizzati. Si dispone la rimozione del veicolo ai sensi dell'art. 159 CdS."
+            },
+            {
+                id: 'guida-ebbrezza-alcolica',
+                category: 'comportamento',
+                categoryLabel: 'Stato Psico-Fisico',
+                title: "Guida in stato di ebbrezza alcolica (Art. 186 CdS)",
+                article: "Art. 186 Codice della Strada (commi 2 lett. a, b o c)",
+                keywords: "ebbrezza alcool etilometro alcol test ubriaco 186",
+                edittale: "Fascia A (0,5-0,8 g/l): € 543 - € 2.170 | Fasce B e C: Ammenda Penale e arresto",
+                pmr: 543.00,
+                sconto30: 543.00,
+                accessoria: "Fascia C (>1,5 g/l): Sequestro ai fini della confisca del veicolo (art. 213 CdS). Sospensione patente non applicabile a veicoli non abilitati a patente (Cass. SS.UU. 25405/2012).",
+                notes: "I conducenti di monopattino sono pienamente soggetti all'art. 186 CdS. Per la Fascia A NON si applica lo sconto del 30% ex art. 202 CdS. Per tassi > 0,8 g/l scatta la comunicazione di notizia di reato (C.N.R.) alla Procura della Repubblica.",
+                reportText: "Circolava alla guida di monopattino elettrico in stato di alterazione psicofisica dovuta all'ingestione di bevande alcoliche con tasso accertato a mezzo etilometro pari a ... g/l."
+            },
+            {
+                id: 'riqualificazione-ciclomotore',
+                category: 'ciclomotore',
+                categoryLabel: 'Riqualificazione a Ciclomotore',
+                title: "Ciclomotore abusivo (Potenza > 2 kW, Motore termico o Sedile fisso)",
+                article: "Concorso: Art. 97 commi 5 e 14 + Art. 193 commi 1 e 2 + Art. 116 commi 15 e 17 CdS",
+                keywords: "ciclomotore sellino sedile scoppio termico 2kw targa patente assicurazione",
+                edittale: "Oltre € 6.000,00 complessivi (Art. 97: € 79; Art. 193: € 866; Art. 116: € 5.100)",
+                pmr: 6045.00,
+                sconto30: 4231.50,
+                accessoria: "SEQUESTRO AMMINISTRATIVO AI FINI DELLA CONFISCA (Artt. 97, 193, 213 CdS) + FERMO AMMINISTRATIVO 3 MESI (Art. 116 CdS).",
+                notes: "FONDAMENTALE: Quando il veicolo ha propulsione termica, potenza superiore a 2 kW o sedile fisso riqualificabile come ciclomotore, NON è un monopattino. Si applicano i tre verbali distinti per mancata immatricolazione/targa (97), circolazione senza assicurazione (193 con sequestro) e guida senza patente (116).",
+                reportText: "Circolava alla guida di un veicolo a motore non avente le caratteristiche di monopattino elettrico (potenza eccedente i limiti / motore endotermico / dotato di sedile), sprovvisto del certificato di circolazione e targa (art. 97 CdS), privo di copertura assicurativa obbligatoria (art. 193 CdS) e senza aver conseguito la prescritta patente di guida (art. 116 CdS). Si procede a sequestro e fermo."
             }
-            mainContent.appendChild(container);
-            backBtn.classList.remove('hidden');
-        };
+        ];
 
-        const showModal = () => {
-            modalBody.innerHTML = '';
-            modalFooter.innerHTML = '';
+        // Mappa delle violazioni selezionate nell'accertamento corrente
+        let selectedViolations = new Set();
 
-            let totalPayment = 0;
-            let reportTextToCopy = [];
-            
-            if (collectedViolations.size === 0) {
-                 modalBody.innerHTML = `<div class="text-center py-8"><svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><h3 class="text-xl font-bold text-slate-800 dark:text-slate-100">Nessuna infrazione rilevata.</h3><p class="text-slate-500 dark:text-slate-400 mt-2">In base alla selezione, non risultano violazioni.</p></div>`;
-            } else {
-                const violationsToShow = allViolations.filter(v => collectedViolations.has(v.id));
-                const violationsContainer = document.createElement('div');
-                violationsContainer.className = 'space-y-6';
-
-                violationsToShow.forEach(violation => {
-                    const paymentValue = parseFloat(violation.details.payment.replace('€', '').replace(',', '.'));
-                    if (!isNaN(paymentValue)) {
-                        totalPayment += paymentValue;
+        // --- 4. DEFINIZIONE DEI PASSI DEL WIZARD (7 FASI OPERATIVE) ---
+        const wizardPhases = [
+            {
+                step: 1,
+                title: "Fase 1: Caratteristiche Tecniche e Conformità Costruttiva",
+                desc: "Verifica se il mezzo presenta sedile/sellino, motore termico o potenza superiore ai limiti consentiti.",
+                question: "Il veicolo rispetta i requisiti di potenza (≤ 500W / 0.5 kW) ed è privo di sedile?",
+                options: [
+                    {
+                        text: "Sì, veicolo conforme (potenza regolare, guida in piedi senza sedile)",
+                        sub: "Nessuna anomalia costruttiva rilevata.",
+                        icon: "✅",
+                        action: () => {}
+                    },
+                    {
+                        text: "No, ha il sellino/sedile o potenza superiore a 0,5 kW (o limitatore sbloccato > 20 km/h)",
+                        sub: "Monopattino non conforme. Scatta la sanzione con sequestro per confisca ex art. 213 CdS.",
+                        icon: "⚠️",
+                        action: () => toggleViolation('caratteristiche-diverse', true)
+                    },
+                    {
+                        text: "Presenta motore a scoppio, sedile strutturale o potenza oltre 2 kW (Ciclomotore abusivo)",
+                        sub: "Riqualificazione immediata a Ciclomotore (Artt. 97, 193, 116 CdS) con sequestro obbligatorio.",
+                        icon: "🚨",
+                        action: () => toggleViolation('riqualificazione-ciclomotore', true)
                     }
-                    reportTextToCopy.push(`- ${violation.title} (Art. ${violation.article}): ${violation.details.reportText}`);
+                ]
+            },
+            {
+                step: 2,
+                title: "Fase 2: Contrassegno Identificativo (Targa) e Assicurazione RCA",
+                desc: "Verifica della presenza del contrassegno IPZS e del certificato di assicurazione obbligatoria.",
+                question: "Il monopattino è dotato di contrassegno (targa) e copertura assicurativa valida?",
+                options: [
+                    {
+                        text: "Sì, entrambi regolari (Targa adesiva presente e Polizza RCA valida)",
+                        sub: "Targa e assicurazione in regola.",
+                        icon: "📋",
+                        action: () => {}
+                    },
+                    {
+                        text: "Manca solo il Contrassegno (Targa adesiva non presente)",
+                        sub: "Violazione art. 1, commi 75-bis e 75-sexiesdecies (€ 100,00).",
+                        icon: "🚫",
+                        action: () => toggleViolation('mancanza-targa', true)
+                    },
+                    {
+                        text: "Manca solo l'Assicurazione RCA (Nessuna copertura esibita)",
+                        sub: "Violazione art. 1, commi 75-ter e 75-sexiesdecies (€ 100,00).",
+                        icon: "❌",
+                        action: () => toggleViolation('mancanza-assicurazione', true)
+                    },
+                    {
+                        text: "Spovvisto di ENTRAMBI (Né Targa né Assicurazione RCA)",
+                        sub: "Concorso delle due distinte violazioni (€ 100 + € 100).",
+                        icon: "⛔",
+                        action: () => {
+                            toggleViolation('mancanza-targa', true);
+                            toggleViolation('mancanza-assicurazione', true);
+                        }
+                    }
+                ]
+            },
+            {
+                step: 3,
+                title: "Fase 3: Conducente, Casco Protettivo ed Età",
+                desc: "Verifica dell'età del conducente e dell'uso del casco protettivo (obbligatorio per tutti).",
+                question: "Il conducente ha compiuto 14 anni e indossa un casco protettivo allacciato?",
+                options: [
+                    {
+                        text: "Sì, età regolare (≥ 14 anni) e casco protettivo regolarmente allacciato",
+                        sub: "Conducente pienamente in regola.",
+                        icon: "🪖",
+                        action: () => {}
+                    },
+                    {
+                        text: "Conducente senza casco protettivo (o con casco non omologato/allacciato)",
+                        sub: "Sanzione per mancato uso del casco per tutti i conducenti (€ 50,00).",
+                        icon: "⚠️",
+                        action: () => toggleViolation('mancanza-casco', true)
+                    },
+                    {
+                        text: "Conducente minore di 14 anni (infradattordicenne)",
+                        sub: "Violazione contestata al genitore/esercente la responsabilità genitoriale (€ 40,00).",
+                        icon: "🚸",
+                        action: () => toggleViolation('eta-minima-14', true)
+                    },
+                    {
+                        text: "Minore di 14 anni E SENZA casco protettivo",
+                        sub: "Cumulo: mancata custodia del minore (€ 40) + mancato uso del casco (€ 50).",
+                        icon: "🚨",
+                        action: () => {
+                            toggleViolation('eta-minima-14', true);
+                            toggleViolation('mancanza-casco', true);
+                        }
+                    }
+                ]
+            },
+            {
+                step: 4,
+                title: "Fase 4: Indicatori di Direzione, Freno, Luci e Giubbotto Riflettente",
+                desc: "Dotazioni tecniche obbligatorie: frecce, stop, luci di posizione e giubbotto alta visibilità.",
+                question: "Il veicolo ha frecce e stop funzionanti? E se è buio, ha luci e giubbotto?",
+                options: [
+                    {
+                        text: "Tutte le dotazioni presenti e funzionanti (frecce, stop, luci e giubbotto se di notte)",
+                        sub: "Dispositivi di segnalazione visiva conformi.",
+                        icon: "💡",
+                        action: () => {}
+                    },
+                    {
+                        text: "Mancano gli indicatori di svolta (frecce) o la luce di arresto (stop)",
+                        sub: "Violazione specifica dotazioni tecniche obbligatorie (€ 266,67).",
+                        icon: "🔦",
+                        action: () => toggleViolation('mancanza-frecce-stop', true)
+                    },
+                    {
+                        text: "Circolazione notturna/buio senza luci accese o catadiottri",
+                        sub: "Sanzione per circolazione notturna a fari spenti (€ 50,00).",
+                        icon: "🌙",
+                        action: () => toggleViolation('luci-notturne-catadiottri', true)
+                    },
+                    {
+                        text: "Circolazione notturna/buio senza giubbotto o bretelle retroriflettenti",
+                        sub: "Sanzione mancato indosso del giubbotto alta visibilità (€ 50,00).",
+                        icon: "🦺",
+                        action: () => toggleViolation('giubbotto-retroriflettente', true)
+                    }
+                ]
+            },
+            {
+                step: 5,
+                title: "Fase 5: Ambiti e Luogo di Circolazione",
+                desc: "Verifica della tipologia di strada percorsa e del rispetto del senso di marcia.",
+                question: "In quale ambito stradale circolava il monopattino?",
+                options: [
+                    {
+                        text: "Strada urbana con limite ≤ 50 km/h o Pista ciclabile (Consentito)",
+                        sub: "Circolazione avvenuta in ambito regolarmente autorizzato.",
+                        icon: "🛣️",
+                        action: () => {}
+                    },
+                    {
+                        text: "Strada extraurbana o strada urbana con limite > 50 km/h",
+                        sub: "Divieto assoluto di circolazione fuori dai centri urbani (€ 100,00).",
+                        icon: "⛔",
+                        action: () => toggleViolation('circolazione-strade-vietate', true)
+                    },
+                    {
+                        text: "Sul marciapiede (non condotto a mano) o Contromano",
+                        sub: "Circolazione vietata su spazio pedonale o contromano (€ 100,00).",
+                        icon: "🚶",
+                        action: () => toggleViolation('marciapiede-contromano', true)
+                    }
+                ]
+            },
+            {
+                step: 6,
+                title: "Fase 6: Condotta di Guida, Passeggeri, Smartphone e Velocità",
+                desc: "Verifica della condotta di guida e del rispetto delle norme comportamentali.",
+                question: "Il conducente ha commesso violazioni di comportamento?",
+                options: [
+                    {
+                        text: "Nessuna violazione comportamentale (Guida corretta, solo a bordo, velocità ok)",
+                        sub: "Comportamento di guida regolare.",
+                        icon: "👍",
+                        action: () => {}
+                    },
+                    {
+                        text: "Trasportava un passeggero (in due su monopattino), animali o cose",
+                        sub: "Divieto di trasporto passeggeri, animali o traino (€ 50,00).",
+                        icon: "👥",
+                        action: () => toggleViolation('trasporto-passeggeri-traino', true)
+                    },
+                    {
+                        text: "Faceva uso dello Smartphone / Cellulare alla guida",
+                        sub: "Art. 173 commi 2 e 3-bis CdS (€ 165,00).",
+                        icon: "📱",
+                        action: () => toggleViolation('smartphone-cellulare', true)
+                    },
+                    {
+                        text: "Superava il limite di velocità (oltre 20 km/h su strada o oltre 6 km/h in area pedonale)",
+                        sub: "Violazione limiti di velocità specifici per monopattini (€ 50,00).",
+                        icon: "⚡",
+                        action: () => toggleViolation('limiti-velocita', true)
+                    },
+                    {
+                        text: "Guida in stato di alterazione alcolica (Ebbrezza alcolica)",
+                        sub: "Applicazione dell'Art. 186 CdS (accertamento etilometrico).",
+                        icon: "🍷",
+                        action: () => toggleViolation('guida-ebbrezza-alcolica', true)
+                    }
+                ]
+            },
+            {
+                step: 7,
+                title: "Fase 7: Sosta del Monopattino",
+                desc: "Verifica della corretta sosta negli stalli consentiti per velocipedi/motocicli.",
+                question: "Il controllo riguarda la sosta irregolare del monopattino?",
+                options: [
+                    {
+                        text: "Sosta regolare (negli appositi stalli) o accertamento solo su marcia",
+                        sub: "Nessuna violazione sulla sosta.",
+                        icon: "🅿️",
+                        action: () => {}
+                    },
+                    {
+                        text: "Sosta sul marciapiede (fuori dagli stalli autorizzati) o di intralcio ai pedoni",
+                        sub: "Violazione Art. 158 CdS (€ 42,00) con RIMOZIONE FORZATA ex art. 159 CdS.",
+                        icon: "🚫",
+                        action: () => toggleViolation('sosta-marciapiede', true)
+                    }
+                ]
+            }
+        ];
 
-                    const el = document.createElement('div');
-                    el.className = 'p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900/50';
-                    const renderDetail = (label, value, colorClass = 'text-slate-900 dark:text-slate-200') => {
-                        if (!value) return '';
-                        return `<div class="mt-2"><p class="text-xs font-semibold text-sky-700 dark:text-sky-400">${label}</p><p class="text-sm ${colorClass}">${value.replace(/\n/g, '<br>')}</p></div>`;
-                    };
-                    el.innerHTML = `
-                        <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">${violation.title}</h3>
-                        ${renderDetail('Norma Violata', violation.article)}
-                        ${renderDetail('Sanzione Edittale', violation.details.sanction, 'text-red-600 dark:text-red-500 font-semibold')}
-                        ${renderDetail('Pagamento in Misura Ridotta', violation.details.payment, 'text-green-700 dark:text-green-500 font-semibold')}
-                        ${renderDetail('Sanzioni Accessorie', violation.details.accessory)}
-                        ${violation.details.notes ? `<div class="mt-2 pt-2 border-t border-dashed border-slate-300 dark:border-slate-600"><p class="text-xs font-semibold text-amber-700 dark:text-amber-500">Note Operative</p><p class="text-sm text-slate-600 dark:text-slate-300">${violation.details.notes}</p></div>` : ''}
-                        ${violation.details.reportText ? `
-                            <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600">
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" /></svg>
-                                    Dicitura per il verbale
-                                </p>
-                                <p class="text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 p-2 rounded-md mt-1 font-mono">${violation.details.reportText}</p>
-                            </div>
-                        ` : ''}
-                    `;
-                    violationsContainer.appendChild(el);
-                });
-                modalBody.appendChild(violationsContainer);
-                
-                // Footer content
-                modalFooter.innerHTML = `
-                    <div class="text-right mb-2">
-                        <span class="text-sm text-slate-600 dark:text-slate-300">Totale P.M.R.:</span>
-                        <span class="font-bold text-xl text-green-700 dark:text-green-500">€ ${totalPayment.toFixed(2).replace('.', ',')}</span>
+        let currentWizardIndex = 0;
+
+        // Render del passo corrente del Wizard
+        const renderWizardStep = () => {
+            const phase = wizardPhases[currentWizardIndex];
+            const container = document.getElementById('wizard-container');
+            
+            // Aggiorna progress bar e label
+            const percent = Math.round(((currentWizardIndex + 1) / wizardPhases.length) * 100);
+            document.getElementById('wizardStepLabel').textContent = phase.title;
+            document.getElementById('wizardPercentLabel').textContent = `${percent}%`;
+            document.getElementById('wizardProgressBar').style.width = `${percent}%`;
+
+            // Aggiorna visibilità bottone indietro
+            document.getElementById('wiz-prev-btn').classList.toggle('hidden', currentWizardIndex === 0);
+            
+            if (currentWizardIndex === wizardPhases.length - 1) {
+                document.getElementById('wiz-next-btn').innerHTML = `<span>Vai al Verbale Finale</span> &rarr;`;
+            } else {
+                document.getElementById('wiz-next-btn').innerHTML = `<span>Prossima Fase</span> &rarr;`;
+            }
+
+            let html = `
+                <div class="step-transition">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">${phase.desc}</p>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">${phase.question}</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            `;
+
+            phase.options.forEach((opt, idx) => {
+                html += `
+                    <div onclick="selectWizardOption(${idx})" class="choice-card p-4 rounded-xl flex items-start gap-3">
+                        <div class="text-2xl flex-shrink-0">${opt.icon}</div>
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm">${opt.text}</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${opt.sub}</p>
+                        </div>
                     </div>
-                    <button id="copy-btn" class="w-full bg-slate-600 text-white font-bold py-3 px-5 rounded-lg hover:bg-slate-700 transition dark:bg-slate-600 dark:hover:bg-slate-500">
-                        Copia Riepilogo per Verbale
-                    </button>
                 `;
-                document.getElementById('copy-btn').addEventListener('click', (e) => {
-                    const button = e.currentTarget;
-                    const textToCopy = `Accertate le seguenti violazioni:\n${reportTextToCopy.join('\n')}\n\nImporto totale P.M.R.: € ${totalPayment.toFixed(2).replace('.', ',')}`;
-                    navigator.clipboard.writeText(textToCopy).then(() => {
-                        const originalText = button.textContent;
-                        button.textContent = 'Copiato! ✔';
-                        button.classList.add('bg-green-600', 'dark:bg-green-600');
-                        setTimeout(() => {
-                           button.textContent = originalText;
-                           button.classList.remove('bg-green-600', 'dark:bg-green-600');
-                        }, 2000);
-                    });
-                });
-            }
-            
-            modal.classList.remove('hidden');
-            modalContent.classList.add('modal-enter-active');
+            });
+
+            html += `</div></div>`;
+            container.innerHTML = html;
         };
 
-        const hideModal = () => {
-            modalContent.classList.add('modal-leave-active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modalContent.classList.remove('modal-enter-active', 'modal-leave-active');
-            }, 200);
+        const selectWizardOption = (optionIndex) => {
+            const phase = wizardPhases[currentWizardIndex];
+            const opt = phase.options[optionIndex];
+            if (opt && opt.action) {
+                opt.action();
+            }
+            if (currentWizardIndex < wizardPhases.length - 1) {
+                currentWizardIndex++;
+                renderWizardStep();
+            } else {
+                switchTab('riepilogo');
+            }
         };
 
-        const startWizard = () => {
-            searchInput.value = '';
-            historyStack = [];
-            collectedViolations.clear();
-            renderStep('start');
+        const nextWizardStep = () => {
+            if (currentWizardIndex < wizardPhases.length - 1) {
+                currentWizardIndex++;
+                renderWizardStep();
+            } else {
+                switchTab('riepilogo');
+            }
         };
-        
-        // --- EVENT LISTENERS ---
-        mainContent.addEventListener('click', (e) => {
-            const button = e.target.closest('button');
-            if (!button) return;
-            const { nextStep, collectViolationId, action } = button.dataset;
-            
-            if (collectViolationId) {
-                collectedViolations.add(collectViolationId);
-            }
-            if (nextStep) {
-                renderStep(nextStep);
-            }
-            if (action === 'showSummary') {
-                showModal();
-            }
-        });
-        
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase().trim();
-            if (query.length > 2) {
-                 const results = allViolations.filter(v => 
-                    v.title.toLowerCase().includes(query) || 
-                    v.keywords.toLowerCase().includes(query)
-                 );
-                 renderViolations(results);
-            } else if (query.length === 0) {
-                 startWizard();
-            }
-        });
 
-        backBtn.addEventListener('click', () => {
-            if (searchInput.value.length > 0) {
-                startWizard();
+        const prevWizardStep = () => {
+            if (currentWizardIndex > 0) {
+                currentWizardIndex--;
+                renderWizardStep();
+            }
+        };
+
+        // --- 5. GESTIONE AGGIUNTA / RIMOZIONE VIOLAZIONI ---
+        const toggleViolation = (violationId, forceAdd = false) => {
+            if (forceAdd) {
+                selectedViolations.add(violationId);
+            } else {
+                if (selectedViolations.has(violationId)) {
+                    selectedViolations.delete(violationId);
+                } else {
+                    selectedViolations.add(violationId);
+                }
+            }
+            updateBadgesAndTotals();
+            renderViolationsList();
+            renderRiepilogo();
+        };
+
+        const updateBadgesAndTotals = () => {
+            const count = selectedViolations.size;
+            const badge = document.getElementById('badge-count');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        };
+
+        // --- 6. GESTIONE PRONTUARIO E FILTRI ---
+        let currentFilterCategory = 'all';
+
+        const setCategoryFilter = (cat) => {
+            currentFilterCategory = cat;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+                } else {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+                }
+            });
+            renderViolationsList();
+        };
+
+        const filterViolations = () => {
+            renderViolationsList();
+        };
+
+        const renderViolationsList = () => {
+            const container = document.getElementById('violations-list');
+            const searchVal = document.getElementById('searchViolationsInput').value.toLowerCase().trim();
+
+            const filtered = violationsDb.filter(v => {
+                const matchCat = (currentFilterCategory === 'all') || (v.category === currentFilterCategory);
+                const matchSearch = !searchVal || 
+                    v.title.toLowerCase().includes(searchVal) || 
+                    v.article.toLowerCase().includes(searchVal) || 
+                    v.keywords.toLowerCase().includes(searchVal) ||
+                    v.reportText.toLowerCase().includes(searchVal);
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-500">
+                        Nessuna violazione trovata con i filtri correnti.
+                    </div>
+                `;
                 return;
             }
-            if (historyStack.length > 1) {
-                historyStack.pop(); 
-                const previousStepId = historyStack.pop();
-                renderStep(previousStepId);
+
+            let html = '';
+            filtered.forEach(v => {
+                const isSelected = selectedViolations.has(v.id);
+                html += `
+                    <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border ${isSelected ? 'border-blue-600 ring-2 ring-blue-500/20 bg-blue-50/20 dark:bg-blue-950/20' : 'border-slate-200 dark:border-slate-800'} transition hover:border-blue-400">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2 mb-2">
+                            <div>
+                                <span class="bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-sky-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">${v.categoryLabel}</span>
+                                <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base mt-1">${v.title}</h4>
+                                <p class="text-xs font-semibold text-blue-700 dark:text-sky-400 font-mono mt-0.5">${v.article}</p>
+                            </div>
+
+                            <button onclick="toggleViolation('${v.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 self-start sm:self-center ${isSelected ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}">
+                                ${isSelected ? '<span>Rimuovi dal Verbale</span>' : '<span>+ Aggiungi al Verbale</span>'}
+                            </button>
+                        </div>
+
+                        <!-- Dettagli Sanzioni -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs py-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-2.5">
+                            <div>
+                                <span class="text-slate-400 block text-[10px]">Edittale Min-Max</span>
+                                <span class="font-bold text-slate-800 dark:text-slate-200">${v.edittale}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 block text-[10px]">PMR (entro 60 gg)</span>
+                                <span class="font-extrabold text-blue-600 dark:text-sky-400">€ ${v.pmr.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 block text-[10px]">Sconto 30% (entro 5 gg)</span>
+                                <span class="font-extrabold text-emerald-600 dark:text-emerald-400">€ ${v.sconto30.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 block text-[10px]">Misura Accessoria</span>
+                                <span class="font-bold ${v.accessoria.includes('CONFISCA') || v.accessoria.includes('RIMOZIONE') ? 'text-red-600 dark:text-red-400' : 'text-slate-600 dark:text-slate-300'}">${v.accessoria}</span>
+                            </div>
+                        </div>
+
+                        <!-- Note Operative & Dicitura -->
+                        <div class="mt-3 text-xs space-y-2">
+                            ${v.notes ? `
+                                <div class="text-slate-600 dark:text-slate-400 bg-amber-50 dark:bg-amber-950/20 border-l-2 border-amber-500 p-2 rounded-r">
+                                    <strong class="text-amber-800 dark:text-amber-300">Nota Operativa:</strong> ${v.notes}
+                                </div>
+                            ` : ''}
+
+                            <div class="flex items-start justify-between gap-2 bg-slate-100 dark:bg-slate-800 p-2.5 rounded-lg">
+                                <div class="font-mono text-[11px] text-slate-800 dark:text-slate-300 flex-grow">
+                                    <span class="font-bold text-blue-700 dark:text-sky-400 block text-[10px] mb-0.5">DICITURA PER VERBALE:</span>
+                                    "${v.reportText}"
+                                </div>
+                                <button onclick="copiaSingolaDicitura('${v.id}')" class="px-2 py-1 bg-white dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 rounded text-[11px] font-semibold transition flex-shrink-0" title="Copia solo questa dicitura">
+                                    Copia
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        };
+
+        // --- 7. RIEPILOGO SANZIONI & GENERAZIONE VERBALE COMPLETO ---
+        const renderRiepilogo = () => {
+            const listContainer = document.getElementById('riepilogo-violazioni-list');
+            const totalePmrEl = document.getElementById('totale-pmr-val');
+            const totaleScontatoEl = document.getElementById('totale-scontato-val');
+            const outputVerbale = document.getElementById('verbale-completo-output');
+
+            if (selectedViolations.size === 0) {
+                totalePmrEl.textContent = "€ 0,00";
+                totaleScontatoEl.textContent = "€ 0,00";
+                listContainer.innerHTML = `
+                    <div class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">
+                        Nessuna violazione selezionata nell'accertamento. Usa l'Assistente Guidato o aggiungi violazioni dal Prontuario.
+                    </div>
+                `;
+                outputVerbale.textContent = "Nessun accertamento da verbalizzare.";
+                return;
             }
+
+            let totalPmr = 0;
+            let totalSconto = 0;
+            let htmlList = '';
+            let dicitureArray = [];
+            let accessoriArray = [];
+
+            selectedViolations.forEach(vId => {
+                const v = violationsDb.find(item => item.id === vId);
+                if (!v) return;
+
+                totalPmr += v.pmr;
+                totalSconto += v.sconto30;
+                dicitureArray.push(`- Violazione all'${v.article}:\n  "${v.reportText}" (P.M.R. € ${v.pmr.toFixed(2).replace('.', ',')})`);
+                
+                if (v.accessoria && v.accessoria !== 'Nessuna.') {
+                    accessoriArray.push(`- ${v.accessoria}`);
+                }
+
+                htmlList += `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs gap-3">
+                        <div>
+                            <span class="font-bold text-slate-800 dark:text-slate-100">${v.title}</span>
+                            <span class="block text-slate-500 font-mono text-[11px]">${v.article}</span>
+                        </div>
+                        <div class="flex items-center gap-3 flex-shrink-0">
+                            <div class="text-right">
+                                <span class="font-bold text-blue-700 dark:text-sky-400 block">€ ${v.pmr.toFixed(2).replace('.', ',')}</span>
+                                <span class="text-[10px] text-emerald-600 dark:text-emerald-400">5gg: € ${v.sconto30.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            <button onclick="toggleViolation('${v.id}')" class="text-red-500 hover:text-red-700 font-bold p-1 rounded" title="Rimuovi">&times;</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            totalePmrEl.textContent = `€ ${totalPmr.toFixed(2).replace('.', ',')}`;
+            totaleScontatoEl.textContent = `€ ${totalSconto.toFixed(2).replace('.', ',')}`;
+            listContainer.innerHTML = htmlList;
+
+            // COMPOSIZIONE VERBALE COMPLETO CON DATI INTESTAZIONE
+            const dtRaw = document.getElementById('fieldDataOra').value;
+            const dataOraFormatted = dtRaw ? dtRaw.replace('T', ' alle ore ') : 'In data odierna';
+            const luogo = document.getElementById('fieldLuogo').value || '[Luogo accertamento]';
+            const agenti = document.getElementById('fieldAgenti').value || '[Agenti operanti]';
+            const comando = document.getElementById('fieldComando').value || '[Comando procedente]';
+            const conducente = document.getElementById('fieldConducente').value || '[Dati generalità conducente]';
+            const genitore = document.getElementById('fieldGenitore').value;
+            const veicolo = document.getElementById('fieldVeicolo').value || 'Monopattino elettrico';
+            const identificativo = document.getElementById('fieldIdentificativo').value || 'Sprovvisto di targa/non identificato';
+
+            let verbaleText = `VERBALE DI CONTESTAZIONE / RELAZIONE DI ACCERTAMENTO CDS\n`;
+            verbaleText += `COMANDO: ${comando}\n`;
+            verbaleText += `ACCERTATORI: ${agenti}\n`;
+            verbaleText += `DATA E ORA: ${dataOraFormatted}\n`;
+            verbaleText += `LOCALITÀ: ${luogo}\n\n`;
+            verbaleText += `DATI CONDUCENTE / TRASGRESSORE:\n`;
+            verbaleText += `${conducente}\n`;
+            if (genitore) {
+                verbaleText += `ESERCENTE RESPONSABILITÀ GENITORIALE / OBBLIGATO: ${genitore}\n`;
+            }
+            verbaleText += `VEICOLO CONTROLLATO: ${veicolo} - Targa/Telaio: ${identificativo}\n\n`;
+            verbaleText += `FATTO ACCERTATO E NORME VIOLATE:\n`;
+            verbaleText += dicitureArray.join('\n\n') + `\n\n`;
+
+            if (accessoriArray.length > 0) {
+                verbaleText += `MISURE CAUTELARI / SANZIONI ACCESSORIE APPLICATE:\n`;
+                verbaleText += accessoriArray.join('\n') + `\n\n`;
+            }
+
+            verbaleText += `IMPORTI PER IL PAGAMENTO IN MISURA RIDOTTA:\n`;
+            verbaleText += `- Importo ridotto del 30% entro 5 giorni dalla contestazione/notifica: € ${totalSconto.toFixed(2).replace('.', ',')}\n`;
+            verbaleText += `- Importo in misura ridotta (P.M.R.) entro 60 giorni: € ${totalPmr.toFixed(2).replace('.', ',')}\n\n`;
+            verbaleText += `MODALITÀ DI PAGAMENTO E RICORSO:\n`;
+            verbaleText += `Il pagamento può essere effettuato mediante modello PagoPA / conto corrente intestato al Comando procedente.\n`;
+            verbaleText += `Avverso il presente verbale è ammesso ricorso entro 60 giorni dalla contestazione/notifica al Prefetto competente per territorio, ovvero entro 30 giorni davanti al Giudice di Pace.\n`;
+
+            outputVerbale.textContent = verbaleText;
+        };
+
+        // --- 8. CAMBIO TAB ---
+        const switchTab = (tabName) => {
+            const secWizard = document.getElementById('section-wizard');
+            const secProntuario = document.getElementById('section-prontuario');
+            const secRiepilogo = document.getElementById('section-riepilogo');
+
+            const btnWizard = document.getElementById('tab-btn-wizard');
+            const btnProntuario = document.getElementById('tab-btn-prontuario');
+            const btnRiepilogo = document.getElementById('tab-btn-riepilogo');
+
+            [btnWizard, btnProntuario, btnRiepilogo].forEach(b => {
+                b.classList.remove('border-blue-600', 'text-blue-700', 'dark:text-sky-400');
+                b.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+            });
+
+            secWizard.classList.add('hidden');
+            secProntuario.classList.add('hidden');
+            secRiepilogo.classList.add('hidden');
+
+            if (tabName === 'wizard') {
+                secWizard.classList.remove('hidden');
+                btnWizard.classList.add('border-blue-600', 'text-blue-700', 'dark:text-sky-400');
+                btnWizard.classList.remove('border-transparent', 'text-slate-500');
+                renderWizardStep();
+            } else if (tabName === 'prontuario') {
+                secProntuario.classList.remove('hidden');
+                btnProntuario.classList.add('border-blue-600', 'text-blue-700', 'dark:text-sky-400');
+                btnProntuario.classList.remove('border-transparent', 'text-slate-500');
+                renderViolationsList();
+            } else if (tabName === 'riepilogo') {
+                secRiepilogo.classList.remove('hidden');
+                btnRiepilogo.classList.add('border-blue-600', 'text-blue-700', 'dark:text-sky-400');
+                btnRiepilogo.classList.remove('border-transparent', 'text-slate-500');
+                renderRiepilogo();
+            }
+        };
+
+        // --- 9. FUNZIONI COPIA RAPIDA E RESET ---
+        const copiaVerbaleCompleto = () => {
+            const text = document.getElementById('verbale-completo-output').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('btn-copia-completo');
+                const orig = btn.innerHTML;
+                btn.innerHTML = `<span>Copiato! ✔</span>`;
+                btn.classList.add('bg-green-600');
+                setTimeout(() => {
+                    btn.innerHTML = orig;
+                    btn.classList.remove('bg-green-600');
+                }, 2000);
+            });
+        };
+
+        const copiaSoloDiciture = () => {
+            let arr = [];
+            selectedViolations.forEach(vId => {
+                const v = violationsDb.find(item => item.id === vId);
+                if (v) arr.push(`Violazione all'${v.article}: ${v.reportText}`);
+            });
+            const text = arr.join('\n\n');
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('btn-copia-dicitura');
+                const orig = btn.innerHTML;
+                btn.innerHTML = `<span>Copiato! ✔</span>`;
+                setTimeout(() => { btn.innerHTML = orig; }, 2000);
+            });
+        };
+
+        const copiaSingolaDicitura = (vId) => {
+            const v = violationsDb.find(item => item.id === vId);
+            if (!v) return;
+            const text = `Violazione all'${v.article}: ${v.reportText}`;
+            navigator.clipboard.writeText(text);
+        };
+
+        const resetAccertamento = () => {
+            if (confirm("Vuoi azzerare l'accertamento e ricominciare?")) {
+                selectedViolations.clear();
+                currentWizardIndex = 0;
+                updateBadgesAndTotals();
+                switchTab('wizard');
+            }
+        };
+
+        // --- 10. MODAL CALCOLATORE DATE TERMINI (5GG / 30GG / 60GG) ---
+        const openCalcolatoreModal = () => {
+            document.getElementById('modal-calcolatore').classList.remove('hidden');
+        };
+
+        const closeCalcolatoreModal = () => {
+            document.getElementById('modal-calcolatore').classList.add('hidden');
+        };
+
+        const calcolaTerminiDate = () => {
+            const val = document.getElementById('calcDataInput').value;
+            if (!val) return;
+            const baseDate = new Date(val);
+
+            // Calcolo 5 gg
+            let d5 = new Date(baseDate);
+            d5.setDate(d5.getDate() + 5);
+            // Proroga se domenica
+            if (d5.getDay() === 0) {
+                d5.setDate(d5.getDate() + 1);
+            }
+
+            // Calcolo 30 gg
+            let d30 = new Date(baseDate);
+            d30.setDate(d30.getDate() + 30);
+            if (d30.getDay() === 0) d30.setDate(d30.getDate() + 1);
+
+            // Calcolo 60 gg
+            let d60 = new Date(baseDate);
+            d60.setDate(d60.getDate() + 60);
+            if (d60.getDay() === 0) d60.setDate(d60.getDate() + 1);
+
+            const formatIt = (d) => {
+                const gg = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const aaaa = d.getFullYear();
+                const giorni = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+                return `${giorni[d.getDay()]} ${gg}/${mm}/${aaaa}`;
+            };
+
+            document.getElementById('calcResult5gg').textContent = formatIt(d5);
+            document.getElementById('calcResult30gg').textContent = formatIt(d30);
+            document.getElementById('calcResult60gg').textContent = formatIt(d60);
+        };
+
+        // --- 11. MODAL NORMATIVA ---
+        const openNormeModal = () => {
+            document.getElementById('modal-norme').classList.remove('hidden');
+        };
+
+        const closeNormeModal = () => {
+            document.getElementById('modal-norme').classList.add('hidden');
+        };
+
+        // Aggiornamento reattivo del verbale al variare dei campi intestazione
+        ['fieldDataOra', 'fieldLuogo', 'fieldAgenti', 'fieldComando', 'fieldConducente', 'fieldGenitore', 'fieldVeicolo', 'fieldIdentificativo'].forEach(fId => {
+            document.getElementById(fId).addEventListener('input', () => {
+                if (selectedViolations.size > 0) {
+                    renderRiepilogo();
+                }
+            });
         });
 
-        resetBtn.addEventListener('click', startWizard);
-        closeModalBtn.addEventListener('click', hideModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
-
-        // Initial call
+        // INIZIALIZZAZIONE ALL'AVVIO
         document.addEventListener('DOMContentLoaded', () => {
             applyTheme();
-            startWizard();
+            initDateTime();
+            renderWizardStep();
+            renderViolationsList();
         });
     </script>
 </body>
 </html>
-
-

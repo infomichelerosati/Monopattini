@@ -1,77 +1,70 @@
-// service-worker.js
-
-// Il nome della cache è versionato. Se aggiorni i file dell'app,
-// incrementa la versione (es. v2) per forzare l'aggiornamento.
-const CACHE_NAME = 'monopattini-prontuario-cache-v2'; // Versione incrementata per includere le icone
+// Service Worker per Prontuario Monopattini Elettrici - Sanzioni CdS 2026
+const CACHE_NAME = 'monopattini-cds-cache-v2026-1';
 const urlsToCache = [
-  '/',
-  'index.html',
-  'icon-192x192.png', // Aggiunta icona alla cache
-  'icon-512x512.png'  // Aggiunta icona alla cache
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192x192.png',
+  './icon-512x512.png'
 ];
 
-// Evento di installazione: apre la cache e vi aggiunge i file principali dell'app.
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Cache aperta e file principali aggiunti.');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Cache aperta: risorse pronte per uso offline.');
+      return cache.addAll(urlsToCache);
+    })
   );
+  self.skipWaiting();
 });
 
-// Evento di fetch: intercetta le richieste di rete.
-// Usa una strategia "cache-first": se la risorsa è in cache, la serve da lì.
-// Altrimenti, la richiede alla rete, la aggiunge alla cache per usi futuri e la restituisce.
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Se la risorsa è in cache, la restituisce.
-        if (response) {
-          return response;
-        }
-
-        // Altrimenti, la scarica dalla rete.
-        return fetch(event.request).then(
-          response => {
-            // Controlla che la risposta sia valida prima di metterla in cache.
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clona la risposta. Una risposta è uno stream e può essere consumata una sola volta.
-            // Ne serve una copia per la cache e una per il browser.
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          }
-        );
-      })
-  );
-});
-
-// Evento di attivazione: pulisce le vecchie cache non più utilizzate.
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          // Se la cache non è nella whitelist (cioè è una vecchia versione), viene eliminata.
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            console.log('Eliminazione vecchia cache:', cacheName);
+          if (cacheName !== CACHE_NAME) {
+            console.log('Rimozione cache obsoleta:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     })
   );
+  self.clients.claim();
 });
 
+self.addEventListener('fetch', event => {
+  // Ignora richieste non GET o schemi non http/https
+  if (event.request.method !== 'GET') return;
+  
+  event.respondWith(
+    caches.match(event.request).then(cachedResponse => {
+      if (cachedResponse) {
+        // Restituisce dalla cache e prova ad aggiornare in background
+        fetch(event.request).then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse));
+          }
+        }).catch(() => {});
+        return cachedResponse;
+      }
+
+      return fetch(event.request).then(networkResponse => {
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+          return networkResponse;
+        }
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseToCache);
+        });
+        return networkResponse;
+      }).catch(() => {
+        // Fallback su index.html per navigazioni
+        if (event.request.mode === 'navigate') {
+          return caches.match('./index.html');
+        }
+      });
+    })
+  );
+});

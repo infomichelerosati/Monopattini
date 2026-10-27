@@ -1,12 +1,12 @@
 {
-  "name": "Prontuario Monopattini Elettrici",
-  "short_name": "Prontuario PME",
-  "description": "Guida rapida alle sanzioni per monopattini elettrici per operatori di Polizia.",
-  "start_url": ".",
-  "scope": ".",
+  "name": "Prontuario Monopattini Elettrici - CdS 2026",
+  "short_name": "Monopattini CdS",
+  "description": "Prontuario operativo per forze di polizia per l'accertamento e la contestazione delle violazioni sui monopattini elettrici (Riforma Codice della Strada 2026 - L. 160/2019 e L. 177/2024).",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#f1f5f9",
-  "theme_color": "#0284c7",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "icons": [
     {
       "src": "icon-192x192.png",
@@ -22,4 +22,3 @@
     }
   ]
 }
-
